@@ -8,7 +8,6 @@ import cookieParser from 'cookie-parser';
 import userRoute from './routes/route.user.js'; 
 import blogRoute from './routes/route.blog.js'; 
 import commentRoute from './routes/route.comment.js';
-import postsummary from './routes/route.postsummary.js'
 import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
@@ -59,8 +58,6 @@ mongoose.connect(MONGO_URL)
 app.use('/api/users', userRoute); 
 app.use('/api/blogs', blogRoute); 
 app.use('/api/comment', commentRoute);
-app.use('/api/postsummaryRoutes',postsummary);
-
 io.on('connection', (socket) => {
   console.log('New client connected');
   socket.on('disconnect', () => {
