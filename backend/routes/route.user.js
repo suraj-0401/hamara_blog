@@ -1,6 +1,5 @@
 import express from 'express';
-import { register,login,logout } from '../controllers/Controllers.User.js'; // Use import for ESM, add .js extension
-// import {isAuthenticated,authorizeRoles} from '../middleware/authUser.js'
+import { register,login,logout } from '../controllers/Controllers.User.js'; 
 import { getMyProfile,getAllAdmin } from '../controllers/Controllers.User.js';
 const router = express.Router();
 

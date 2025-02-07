@@ -1,52 +1,54 @@
-import React from 'react';
-import Navbar from '../src/components/Navbar';
-import Home from '../src/components/Home';
-import Footer from '../src/components/Footer';
-import Blogs from '../src/pages/Blogs';
-import Contact from '../src/pages/Contact';
-import Creators from '../src/pages/Creators';
-import Dashboard from '../src/pages/Dashboard';
-import Login from '../src/pages/Login';
-import Signup from '../src/pages/Signup';
-import { Toaster } from 'react-hot-toast';
-import { Route, Routes, useLocation } from 'react-router-dom';
-import BlogDetail from './pages/BlogDetails';
-import MyBlogs from './dashboard/MyBlogs';
-import PageNotFound from './pages/PageNotFound';
-import ChatApp from './chatapp/ChatApp';
-import Search from './pages/Search';
-import Summarizer from './ai/Summarize';
-import UpdateBlog from './dashboard/UpdateBlog';
+import React, { Suspense, lazy } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Navbar from "../src/components/Navbar";
+import Footer from "../src/components/Footer";
+import { Toaster } from "react-hot-toast";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
+// Lazy load components
+const Home = lazy(() => import("../src/components/Home"));
+const Blogs = lazy(() => import("../src/pages/Blogs"));
+const Contact = lazy(() => import("../src/pages/Contact"));
+const Creators = lazy(() => import("../src/pages/Creators"));
+const Dashboard = lazy(() => import("../src/pages/Dashboard"));
+const Login = lazy(() => import("../src/pages/Login"));
+const Signup = lazy(() => import("../src/pages/Signup"));
+const BlogDetail = lazy(() => import("./pages/BlogDetails"));
+const MyBlogs = lazy(() => import("./dashboard/MyBlogs"));
+const UpdateBlog = lazy(() => import("./dashboard/UpdateBlog"));
+const Search = lazy(() => import("./pages/Search"));
+const PageNotFound = lazy(() => import("./pages/PageNotFound"));
 
 function App() {
   const location = useLocation();
-  const hideNavbarFooter = ['/login', '/signup', '/dashboard'].includes(location.pathname);
+  const hideNavbarFooter = ["/login", "/signup", "/dashboard"].includes(location.pathname);
 
   return (
     <div>
       {!hideNavbarFooter && <Navbar />}
-      
-      <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/creators" element={<Creators />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/my-blogs/:id" element={<MyBlogs />} />
+            <Route path="/update-blog/:id" element={<UpdateBlog />} />
+          </Route>
 
-        <Route path='/' element={<Home />} />
-        <Route path='/home' element={<Home />} />
-        <Route path='/chat' element={<ChatApp />} />
-        <Route path='/blogs' element={<Blogs />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='/creators' element={<Creators />} />
-        
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/search' element={<Search />} />
-        <Route path='/blogs/:id' element={<BlogDetail />} />
-        <Route path='/my-blogs/:id' element={<MyBlogs />} />
-        <Route path="/update-blog/:id" element={<UpdateBlog />} /> 
-
-
-        <Route path='*' element={<PageNotFound />} />
-      </Routes>
-      
+          {/* Page Not Found */}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Suspense>
       {!hideNavbarFooter && <Footer />}
       <Toaster />
     </div>

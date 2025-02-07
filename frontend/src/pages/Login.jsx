@@ -23,11 +23,9 @@ function Login() {
     }
   },[])
 
-  // login handler
  const loginHandler = async (e) => {
   e.preventDefault();
   
-  // Check if role is selected
   if (!role) {
     setError("Please select a role");
     return;
@@ -50,18 +48,15 @@ function Login() {
 
     setIsLoggedIn(true);
     localStorage.setItem('isLoggedIn', true);
-    localStorage.setItem('userData', JSON.stringify(data)); // Store as JSON string
+    localStorage.setItem('userData', JSON.stringify(data)); 
     localStorage.setItem('token', data.token);
 
     const decodedToken = jwtDecode(data.token);
     localStorage.setItem('userRole', decodedToken.role);
     setUserRole(decodedToken.role);      
-
-    navigate('/');
+    navigate('/');  
     setAuthUser(data);
-
   } catch (error) {
-    // Enhanced error logging
     console.error('Error during login request:', error);
 
     if (error.response) {

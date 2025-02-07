@@ -10,7 +10,6 @@ function Home() {
       <Trendings/>
       <Pagination/>
       <HomeCreators/>
-      
     </div>
   )
 }

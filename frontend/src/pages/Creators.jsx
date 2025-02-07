@@ -3,18 +3,18 @@ import React, { useState, useEffect } from 'react';
 import { baseUrl } from '../Urls';
 
 function HomeCreators() {
-  const [data, setData] = useState(null); // State to store fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${baseUrl}/api/users/getAllAdmin`);
-        setData(response.data); // Set fetched data to state
-        setLoading(false); // Set loading to false once data is fetched
+        setData(response.data);
+        setLoading(false); 
       } catch (err) {
-        setError(err); // Set error if request fails
+        setError(err); 
         setLoading(false);
       }
     };
@@ -56,7 +56,7 @@ function HomeCreators() {
                     <strong>Email:</strong> {admin.email}
                   </p>
                   <p className="text-gray-500 text-sm mt-1">
-                    <strong>Created At:</strong> {new Date(admin.createdAt).toLocaleString()}
+                    <strong>Created At:</strong> {new Date(admin.createdAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>

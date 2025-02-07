@@ -22,6 +22,13 @@ function CreateBlog() {
 
   const handleCreateBlog = async (e) => {
     e.preventDefault();
+
+    // Check if all fields are filled
+    if (!title || !category || !about || !blogImage) {
+        toast.error("Please fill all the required fields.");
+        return; // Prevent submission if fields are missing
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("category", category);
@@ -30,40 +37,37 @@ function CreateBlog() {
     
     const token = localStorage.getItem('token');
     try {
-      const { data } = await axios.post(
-        `${baseUrl}/api/blogs/createBlog`,
-        formData, // Include the form data here
-        {
-          headers: {
-            authorization: `Bearer ${token}`, // Corrected authorization header
-            "Content-Type": "multipart/form-data" // Set the content type for file upload
-          }
-        }
-      );
+        const { data } = await axios.post(
+            `${baseUrl}/api/blogs/createBlog`,
+            formData, 
+            {
+                headers: {
+                    authorization: `Bearer ${token}`, 
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+        );
     
-    
-    toast.success(data.message || "Blog created successfully");
-    
-    // Get the blog ID from the response
-    const blogId = data.blogId;
-    localStorage.setItem(blogId)
-    // Set the blog ID in localStorage
-    if (blogId) {
-      localStorage.setItem('createdBlogId', blogId);
-    }
+        toast.success(data.message || "Blog created successfully");
 
-      setTitle("");
-      setCategory("");
-      setAbout("");
-      setBlogImage("");
-      setBlogImagePreview("");
+        const blogId = data.blogId;
+        if (blogId) {
+            localStorage.setItem('createdBlogId', blogId);
+        }
+
+        setTitle("");
+        setCategory("");
+        setAbout("");
+        setBlogImage("");
+        setBlogImagePreview("");
     } catch (error) {
-      toast.error(error.response?.data.message || "Please fill the required fields");
+        toast.error(error.response?.data?.message || "Please fill the required fields");
     }
-  };
+};
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-10 bg-gray-50 ">
+    <div className="min-h-screen flex items-center justify-center py-10 bg-gray-50">
       <div className="max-w-4xl w-full p-6 bg-white rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold mb-6 text-center">Create Blog</h3>
         <form onSubmit={handleCreateBlog} className="space-y-6">
@@ -91,7 +95,6 @@ function CreateBlog() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required // Added required attribute for validation
             />
           </div>
 
@@ -109,7 +112,6 @@ function CreateBlog() {
               accept="image/*" // Limit file types to images
               onChange={changePhotoHandler}
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required // Added required attribute for validation
             />
           </div>
 
@@ -121,7 +123,6 @@ function CreateBlog() {
               value={about}
               onChange={(e) => setAbout(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required // Added required attribute for validation
             />
           </div>
 

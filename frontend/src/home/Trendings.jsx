@@ -1,46 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthProvider";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
 
 function Trendings() {
-  // Responsive breakpoints configuration for Carousel
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 4,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
-
   const { blogs } = useAuth();
+  const [loading, setLoading] = useState(true); // Manage loading state
+
+  useEffect(() => {
+    // Simulate loading time for fetching blogs
+    const timer = setTimeout(() => {
+      setLoading(false); // Set loading to false after data is loaded
+    }, 1000);
+
+    return () => clearTimeout(timer); // Cleanup timeout on unmount
+  }, [blogs]);
+
+  const responsive = {
+    superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 5 },
+    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3 }, // 3 items per row on laptop
+    tablet: { breakpoint: { max: 1024, min: 464 }, items: 2 }, // 2 items per row on tablet
+    mobile: { breakpoint: { max: 464, min: 0 }, items: 1 }, // 1 item per row on mobile
+  };
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-4xl font-bold text-gray-800 text-center mb-12 ">
-        Trendings
-      </h1>
-      {blogs && blogs.length > 0 ? (
+      <h1 className="text-4xl font-bold text-gray-800 text-center mb-12">Trendings</h1>
+
+      {loading ? (
+        // 🔹 Spinner while loading
+        <div className="flex justify-center items-center h-40">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-600 border-solid"></div>
+        </div>
+      ) : blogs && blogs.length > 0 ? (
         <Carousel
           responsive={responsive}
-          infinite={true} // Continuous scrolling
-          autoPlay={true} // Auto play on larger devices
-          autoPlaySpeed={3000} // Speed of autoplay
-          containerClass="carousel-container" // Custom class for styling
-          itemClass="carousel-item-padding-8-px" // Padding for carousel items
-          removeArrowOnDeviceType={["tablet", "mobile"]} // Remove arrows on small devices
+          infinite={true}
+          autoPlay={true}
+          autoPlaySpeed={3000}
+          containerClass="carousel-container"
+          itemClass="carousel-item-padding-8-px"
+          removeArrowOnDeviceType={["tablet", "mobile"]}
           partialVisible={false}
         >
           {blogs.slice(0, 40).map((element) => (
@@ -49,7 +50,6 @@ function Trendings() {
               key={element._id}
               className="p-4 bg-white border border-gray-400 rounded-lg shadow-lg mx-2 flex flex-col items-center transition-transform duration-500 ease-in-out hover:scale-105 hover:shadow-2xl hover:border-indigo-500"
             >
-              {/* Blog Image Section */}
               <div className="relative overflow-hidden rounded-t-lg w-full h-56 bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300">
                 <img
                   src={element.blogImage.url}
@@ -61,11 +61,8 @@ function Trendings() {
                 </div>
               </div>
 
-              {/* Blog Details */}
               <div className="p-5 bg-gray-50 rounded-b-lg h-36 w-full flex flex-col justify-between transition-colors duration-300 hover:bg-gray-100">
-                <h2 className="text-lg font-bold mb-2 text-gray-800 truncate">
-                  {element.title}
-                </h2>
+                <h2 className="text-lg font-bold mb-2 text-gray-800 truncate">{element.title}</h2>
                 <div className="flex items-center">
                   <img
                     src={element.adminImage || "https://via.placeholder.com/150"}

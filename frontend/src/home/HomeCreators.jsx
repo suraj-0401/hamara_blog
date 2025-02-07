@@ -56,7 +56,7 @@ function HomeCreators() {
                     <strong>Email:</strong> {admin.email}
                   </p>
                   <p className="text-gray-500 text-sm mt-1">
-                    <strong>Created At:</strong> {new Date(admin.createdAt).toLocaleString()}
+                    <strong>Created At:</strong> {new Date(admin.createdAt).toLocaleDateString()}
                   </p>
                 </div>
               </div>
